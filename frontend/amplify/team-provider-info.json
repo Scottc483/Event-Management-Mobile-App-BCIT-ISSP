@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-eventrsvpapplication-staging-203440-authRole",
+      "UnauthRoleArn": "arn:aws:iam::076156241444:role/amplify-eventrsvpapplication-staging-203440-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::076156241444:role/amplify-eventrsvpapplication-staging-203440-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-eventrsvpapplication-staging-203440-deployment",
+      "UnauthRoleName": "amplify-eventrsvpapplication-staging-203440-unauthRole",
+      "StackName": "amplify-eventrsvpapplication-staging-203440",
+      "StackId": "arn:aws:cloudformation:us-west-2:076156241444:stack/amplify-eventrsvpapplication-staging-203440/c6e01a00-dfba-11ed-b294-0a5e635213ed",
+      "AmplifyAppId": "dsibwfcbaqzuh"
+    },
+    "categories": {
+      "auth": {
+        "EventRSVPApplication": {}
+      }
+    }
+  }
+}

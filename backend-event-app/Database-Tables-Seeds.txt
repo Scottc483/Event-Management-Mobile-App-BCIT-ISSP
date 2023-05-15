@@ -1,0 +1,102 @@
+DROP TABLE IF EXISTS eventcapacity;
+DROP TABLE IF EXISTS eventwaitlist;
+DROP TABLE IF EXISTS eventattendees;
+DROP TABLE IF EXISTS events;
+DROP INDEX IF EXISTS user_email_idx;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS userroles;
+DROP TABLE IF EXISTS membershipstatuses;
+DROP TABLE IF EXISTS eligibilitytypes;
+DROP TABLE IF EXISTS attendeestatuses;
+DROP TABLE IF EXISTS attendancestatuses;
+
+CREATE TABLE userroles (
+    role_id STRING PRIMARY KEY
+   );
+
+CREATE TABLE membershipstatuses (
+    membership_status_id STRING PRIMARY KEY
+   );
+
+CREATE TABLE eligibilitytypes (
+    type_id STRING PRIMARY KEY
+   );
+
+CREATE TABLE attendeestatuses (
+    attendee_status_id STRING PRIMARY KEY
+   );
+
+CREATE TABLE attendancestatuses (
+    attendance_status_id STRING PRIMARY KEY
+   );
+
+CREATE TABLE events (
+    event_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_name STRING NOT NULL,
+    event_date DATE NOT NULL,
+    event_start TIMESTAMP NOT NULL,
+    event_end TIMESTAMP NOT NULL,
+    event_location STRING NOT NULL,
+    capacity INT NOT NULL,
+    type_id STRING REFERENCES eligibilitytypes (type_id),
+    loyalty_max INT,
+    cancelled BOOL DEFAULT false,
+    reason STRING
+   );
+
+CREATE TABLE users (
+    user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email STRING NOT NULL,
+    first_name STRING NOT NULL,
+    last_name STRING NOT NULL,
+    role_id STRING REFERENCES userroles (role_id),
+    membership_status_id STRING REFERENCES membershipstatuses (membership_status_id),
+    date_signed_up TIMESTAMP NOT NULL DEFAULT NOW() 
+    );
+CREATE INDEX user_email_idx ON users (email);
+
+CREATE TABLE eventattendees (
+    event_id UUID REFERENCES events (event_id),
+    user_id UUID REFERENCES users (user_id),
+    attendee_status_id STRING REFERENCES attendeestatuses (attendee_status_id),
+    attendance_status_id STRING REFERENCES attendancestatuses (attendance_status_id),
+    PRIMARY KEY (event_id, user_id)
+);
+
+CREATE TABLE eventwaitlist (
+    event_id UUID REFERENCES events (event_id),
+    user_id UUID REFERENCES users (user_id),
+    waitlist_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (event_id, user_id)
+);
+
+CREATE TABLE eventcapacity (
+    event_id UUID REFERENCES events (event_id),
+    capacity INT NOT NULL,
+    number_of_attendees INT NOT NULL,
+    PRIMARY KEY (event_id)
+);
+
+
+INSERT INTO userroles (role_id) VALUES ('Admin');
+INSERT INTO userroles (role_id) VALUES ('Host');
+INSERT INTO userroles (role_id) VALUES ('Attendee');
+
+INSERT INTO membershipstatuses (membership_status_id) VALUES ('Rejected');
+INSERT INTO membershipstatuses (membership_status_id) VALUES ('Gold');
+INSERT INTO membershipstatuses (membership_status_id) VALUES ('Silver');
+INSERT INTO membershipstatuses (membership_status_id) VALUES ('Bronze');
+INSERT INTO membershipstatuses (membership_status_id) VALUES ('None');
+
+INSERT INTO eligibilitytypes (type_id) VALUES ('Guest List');
+INSERT INTO eligibilitytypes (type_id) VALUES ('Gold Tier');
+INSERT INTO eligibilitytypes (type_id) VALUES ('Silver Tier');
+INSERT INTO eligibilitytypes (type_id) VALUES ('Bronze Tier');
+INSERT INTO eligibilitytypes (type_id) VALUES ('Loyalty');
+
+INSERT INTO attendancestatuses (attendance_status_id) VALUES ('Attended');
+INSERT INTO attendancestatuses (attendance_status_id) VALUES ('No Show');
+INSERT INTO attendancestatuses (attendance_status_id) VALUES ('Unknown');
+
+INSERT INTO attendeestatuses (attendee_status_id) VALUES ('Registered');
+INSERT INTO attendeestatuses (attendee_status_id) VALUES ('Invited');

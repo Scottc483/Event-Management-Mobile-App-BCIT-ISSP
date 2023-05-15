@@ -1,0 +1,1 @@
+export const filterValue =['All', 'Registered', 'Eligible', 'Waitlisted'];
